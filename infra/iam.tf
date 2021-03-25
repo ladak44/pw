@@ -3,6 +3,7 @@ resource "aws_iam_instance_profile" "emr_profile" {
   role = aws_iam_role.role.name
 }
 
+
 resource "aws_iam_role" "role" {
   name = "test_role"
   path = "/"
