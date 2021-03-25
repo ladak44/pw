@@ -2,7 +2,6 @@ resource "aws_emr_cluster" "cluster" {
   name          = "emr-test-arn"
   release_label = "emr-4.6.0"
   applications  = ["Spark"]
-
   additional_info = <<EOF
 {
   "instanceAwsClientConfiguration": {
