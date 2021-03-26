@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "emr_autoscaling_role_policy" {
 
 resource "aws_iam_role" "emr_autoscaling_role" {
   name               = "EMR_AutoScalingRole"
-  assume_role_policy = "${data.aws_iam_policy_document.emr_autoscaling_role_policy.json}"
+  assume_role_policy = data.aws_iam_policy_document.emr_autoscaling_role_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "emr_autoscaling_role" {

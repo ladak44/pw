@@ -14,6 +14,10 @@ variable "environment" {
   default = "Big Data"
 }
 
+variable "key_name" {
+  default = "aws_educate"
+}
+
 variable "ingress_cidr_blocks" {
-   default = "0.0.0.0/0"
+   default = "5.184.35.115/32"
 }

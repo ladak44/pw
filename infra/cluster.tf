@@ -19,6 +19,7 @@ EOF
     emr_managed_master_security_group = aws_security_group.emr_master.id
     emr_managed_slave_security_group  = aws_security_group.emr_slave.id
     instance_profile                  = aws_iam_instance_profile.emr_profile.arn
+    key_name                          = var.key_name
   }
 
   master_instance_group {
@@ -79,11 +80,11 @@ EOF
     env  = "env"
   }
 
-  bootstrap_action {
-    path = "s3://elasticmapreduce/bootstrap-actions/run-if"
-    name = "runif"
-    args = ["instance.isMaster=true", "echo running on master node"]
-  }
+  #bootstrap_action {
+  #  path = "s3://elasticmapreduce/bootstrap-actions/run-if"
+  #  name = "runif"
+  #  args = ["instance.isMaster=true", "echo running on master node"]
+  #}
 
   configurations_json = <<EOF
   [

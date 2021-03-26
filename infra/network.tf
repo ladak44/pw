@@ -44,7 +44,10 @@ resource "aws_route_table" "emr_route" {
   }
 }
 
-
+resource "aws_route_table_association" "emr_route_assoc" {
+    subnet_id = aws_subnet.emr_subnet.id
+    route_table_id = aws_route_table.emr_route.id
+}
 
 
 
