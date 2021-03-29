@@ -69,6 +69,6 @@ resource "aws_iam_role" "emr_autoscaling_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "emr_autoscaling_role" {
-  role       = "${aws_iam_role.emr_autoscaling_role.name}"
+  role       = aws_iam_role.emr_autoscaling_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforAutoScalingRole"
 }
