@@ -23,7 +23,6 @@ def main():
     print("Url:"+ url)
     req = urllib.request.Request(url)
     req.add_header('Accept', 'application/json')
-    #req.add_header('Accept', 'gzip')
     req.add_header('apikey', apikey)
     try:
        with urllib.request.urlopen(req) as url:
