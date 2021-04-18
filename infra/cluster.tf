@@ -1,7 +1,8 @@
 resource "aws_emr_cluster" "cluster" {
   name          = "emr-test-arn"
-  release_label = "emr-4.6.0"
-  applications  = ["Spark"]
+  #release_label = "emr-5.0.0"
+  release_label = "emr-5.33.0"
+  applications  = ["Spark","Hive","ZooKeeper"]
   additional_info = <<EOF
 {
   "instanceAwsClientConfiguration": {
@@ -10,7 +11,7 @@ resource "aws_emr_cluster" "cluster" {
   }
 }
 EOF
-
+  log_uri = "s3://mladak/emr"
   termination_protection            = false
   keep_job_flow_alive_when_no_steps = true
 
@@ -80,11 +81,11 @@ EOF
     env  = "env"
   }
 
-  #bootstrap_action {
-  #  path = "s3://elasticmapreduce/bootstrap-actions/run-if"
-  #  name = "runif"
-  #  args = ["instance.isMaster=true", "echo running on master node"]
-  #}
+ # bootstrap_action {
+  #  path = "s3://mladak/emr/bootstrap/bootstrap.sh"
+   # name = "Install kafka"
+#    #args = ["instance.isMaster=true", "echo running on master node"]
+ # }
 
   configurations_json = <<EOF
   [
