@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "name" {
-  default = "Marcin"
+  default = "Airly"
 }
 
 variable "project" {
@@ -19,5 +19,5 @@ variable "key_name" {
 }
 
 variable "ingress_cidr_blocks" {
-   default = "5.184.35.115/32"
+   default = "5.184.2.217/32"
 }
