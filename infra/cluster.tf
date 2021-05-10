@@ -1,17 +1,9 @@
 resource "aws_emr_cluster" "cluster" {
-  name          = "emr-test-arn"
-  #release_label = "emr-5.0.0"
+  name          = "Airly-EMR"
   release_label = "emr-5.33.0"
   applications  = ["Spark","Hive","ZooKeeper"]
-  additional_info = <<EOF
-{
-  "instanceAwsClientConfiguration": {
-    "proxyPort": 8099,
-    "proxyHost": "myproxy.example.com"
-  }
-}
-EOF
-  log_uri = "s3://mladak/emr"
+
+  log_uri = "s3://${var.s3_bucket_name}/emr/logs/"
   termination_protection            = false
   keep_job_flow_alive_when_no_steps = true
 
@@ -81,40 +73,23 @@ EOF
     env  = "env"
   }
 
- # bootstrap_action {
-  #  path = "s3://mladak/emr/bootstrap/bootstrap.sh"
-   # name = "Install kafka"
-#    #args = ["instance.isMaster=true", "echo running on master node"]
- # }
+#  bootstrap_action {
+   # path = "s3://${var.s3_bucket_name}/emr/bootstrap/bootstrap.sh"
+#    path = "s3://airly-pw/emr/bootstrap/bootstrap.sh"
+#    name = "Bootstraping scripts"
+#  }
 
-  configurations_json = <<EOF
-  [
-    {
-      "Classification": "hadoop-env",
-      "Configurations": [
-        {
-          "Classification": "export",
-          "Properties": {
-            "JAVA_HOME": "/usr/lib/jvm/java-1.8.0"
-          }
-        }
-      ],
-      "Properties": {}
-    },
-    {
-      "Classification": "spark-env",
-      "Configurations": [
-        {
-          "Classification": "export",
-          "Properties": {
-            "JAVA_HOME": "/usr/lib/jvm/java-1.8.0"
-          }
-        }
-      ],
-      "Properties": {}
-    }
-  ]
-EOF
+#step = [
+#    {
+#      name              = "Copy script file from s3."
+#      action_on_failure = "CONTINUE"
+
+#      hadoop_jar_step : {
+#        jar  = "command-runner.jar",
+#        args = ["aws", "s3", "cp", "s3://airly-pw/bootstrap/bootstrap.sh", "/home/hadoop/"]
+#      }
+#    }
+#]
 
   service_role = aws_iam_role.emr_service_role.arn
   autoscaling_role = aws_iam_role.emr_autoscaling_role.arn

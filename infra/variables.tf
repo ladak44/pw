@@ -21,3 +21,7 @@ variable "key_name" {
 variable "ingress_cidr_blocks" {
    default = "5.184.2.217/32"
 }
+
+variable "s3_bucket_name" {
+  default = "airly-pw"
+}
