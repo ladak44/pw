@@ -1,0 +1,6 @@
+{
+    "_comment": "Plik parametrów wykorzystywany przez srypt arily_sensor.py",
+    "broker": "ec2-3-86-229-23.compute-1.amazonaws.com:9092",
+    "api_key": "JgqZOW8cEUxwyJXCJ3NscgmUPOIlAEiH",
+    "url": "https://airapi.airly.eu/v2/measurements/installation?installationId="
+}
