@@ -1,3 +1,4 @@
+# VPC (Virtual Private Cloud) klastra
 resource "aws_vpc" "emr_vpc" {
     cidr_block = "10.0.0.0/16"
     
@@ -9,7 +10,7 @@ resource "aws_vpc" "emr_vpc" {
         Env = var.environment
     }
 }
-
+# Prywatna podsieć
 resource "aws_subnet" "emr_subnet" {
     vpc_id = aws_vpc.emr_vpc.id
     cidr_block = "10.0.1.0/24"
@@ -20,7 +21,7 @@ resource "aws_subnet" "emr_subnet" {
         Env = var.environment
     }
 }
-
+# Internet gateway - połącznie ze światem zewnętrznym
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.emr_vpc.id
 
@@ -30,7 +31,7 @@ resource "aws_internet_gateway" "gw" {
     Env = var.environment
   }
 }
-
+# Tabela routingu pomiędzy gatewayem a VPC
 resource "aws_route_table" "emr_route" {
   vpc_id = aws_vpc.emr_vpc.id
 
@@ -45,7 +46,7 @@ resource "aws_route_table" "emr_route" {
     Env = var.environment
   }
 }
-
+# Podczepienie routingu do podsieci
 resource "aws_route_table_association" "emr_route_assoc" {
     subnet_id = aws_subnet.emr_subnet.id
     route_table_id = aws_route_table.emr_route.id
