@@ -1,8 +1,9 @@
+# nazwa providera i region
 provider "aws" {
   region = "us-east-1"
 }
 
-
+# wersja providera 
 terraform {
   required_providers {
     aws = {
