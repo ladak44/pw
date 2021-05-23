@@ -1,0 +1,645 @@
+# Plan utworzenia infrastruktury
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following      
+symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_emr_cluster.cluster will be created
+  + resource "aws_emr_cluster" "cluster" {
+      + applications                      = [
+          + "Hive",
+          + "JupyterEnterpriseGateway",
+          + "JupyterHub",
+          + "Spark",
+          + "ZooKeeper",
+        ]
+      + arn                               = (known after apply)
+      + autoscaling_role                  = (known after apply)
+      + cluster_state                     = (known after apply)
+      + ebs_root_volume_size              = 100
+      + id                                = (known after apply)
+      + keep_job_flow_alive_when_no_steps = true
+      + log_uri                           = "s3://airlypw/emr/logs/"
+      + master_public_dns                 = (known after apply)
+      + name                              = "Airly-EMR"
+      + release_label                     = "emr-5.33.0"
+      + scale_down_behavior               = (known after apply)
+      + service_role                      = (known after apply)
+      + step                              = (known after apply)
+      + step_concurrency_level            = 1
+      + tags                              = {
+          + "env"  = "env"
+          + "role" = "rolename"
+        }
+      + tags_all                          = {
+          + "env"  = "env"
+          + "role" = "rolename"
+        }
+      + termination_protection            = false
+      + visible_to_all_users              = true
+
+      + core_instance_fleet {
+          + id                             = (known after apply)
+          + name                           = (known after apply)
+          + provisioned_on_demand_capacity = (known after apply)
+          + provisioned_spot_capacity      = (known after apply)
+          + target_on_demand_capacity      = (known after apply)
+          + target_spot_capacity           = (known after apply)
+
+          + instance_type_configs {
+              + bid_price                                  = (known after apply)
+              + bid_price_as_percentage_of_on_demand_price = (known after apply)
+              + instance_type                              = (known after apply)
+              + weighted_capacity                          = (known after apply)
+
+              + configurations {
+                  + classification = (known after apply)
+                  + properties     = (known after apply)
+                }
+
+              + ebs_config {
+                  + iops                 = (known after apply)
+                  + size                 = (known after apply)
+                  + type                 = (known after apply)
+                  + volumes_per_instance = (known after apply)
+                }
+            }
+
+          + launch_specifications {
+              + on_demand_specification {
+                  + allocation_strategy = (known after apply)
+                }
+
+              + spot_specification {
+                  + allocation_strategy      = (known after apply)
+                  + block_duration_minutes   = (known after apply)
+                  + timeout_action           = (known after apply)
+                  + timeout_duration_minutes = (known after apply)
+                }
+            }
+        }
+
+      + core_instance_group {
+          + autoscaling_policy = jsonencode(
+                {
+                  + Constraints = {
+                      + MaxCapacity = 2
+                      + MinCapacity = 1
+                    }
+                  + Rules       = [
+                      + {
+                          + Action      = {
+                              + SimpleScalingPolicyConfiguration = {
+                                  + AdjustmentType    = "CHANGE_IN_CAPACITY"
+                                  + CoolDown          = 300
+                                  + ScalingAdjustment = 1
+                                }
+                            }
+                          + Description = "Scale out if YARNMemoryAvailablePercentage is less than 15"
+                          + Name        = "ScaleOutMemoryPercentage"
+                          + Trigger     = {
+                              + CloudWatchAlarmDefinition = {
+                                  + ComparisonOperator = "LESS_THAN"
+                                  + EvaluationPeriods  = 1
+                                  + MetricName         = "YARNMemoryAvailablePercentage"
+                                  + Namespace          = "AWS/ElasticMapReduce"
+                                  + Period             = 300
+                                  + Statistic          = "AVERAGE"
+                                  + Threshold          = 15
+                                  + Unit               = "PERCENT"
+                                }
+                            }
+                        },
+                    ]
+                }
+            )
+          + bid_price          = "0.30"
+          + id                 = (known after apply)
+          + instance_count     = 1
+          + instance_type      = "c4.large"
+
+          + ebs_config {
+              + size                 = 40
+              + type                 = "gp2"
+              + volumes_per_instance = 1
+            }
+        }
+
+      + ec2_attributes {
+          + emr_managed_master_security_group = (known after apply)
+          + emr_managed_slave_security_group  = (known after apply)
+          + instance_profile                  = (known after apply)
+          + key_name                          = "aws_educate"
+          + service_access_security_group     = (known after apply)
+          + subnet_id                         = (known after apply)
+          + subnet_ids                        = (known after apply)
+        }
+
+      + master_instance_fleet {
+          + id                             = (known after apply)
+          + name                           = (known after apply)
+          + provisioned_on_demand_capacity = (known after apply)
+          + provisioned_spot_capacity      = (known after apply)
+          + target_on_demand_capacity      = (known after apply)
+          + target_spot_capacity           = (known after apply)
+
+          + instance_type_configs {
+              + bid_price                                  = (known after apply)
+              + bid_price_as_percentage_of_on_demand_price = (known after apply)
+              + instance_type                              = (known after apply)
+              + weighted_capacity                          = (known after apply)
+
+              + configurations {
+                  + classification = (known after apply)
+                  + properties     = (known after apply)
+                }
+
+              + ebs_config {
+                  + iops                 = (known after apply)
+                  + size                 = (known after apply)
+                  + type                 = (known after apply)
+                  + volumes_per_instance = (known after apply)
+                }
+            }
+
+          + launch_specifications {
+              + on_demand_specification {
+                  + allocation_strategy = (known after apply)
+                }
+
+              + spot_specification {
+                  + allocation_strategy      = (known after apply)
+                  + block_duration_minutes   = (known after apply)
+                  + timeout_action           = (known after apply)
+                  + timeout_duration_minutes = (known after apply)
+                }
+            }
+        }
+
+      + master_instance_group {
+          + id             = (known after apply)
+          + instance_count = 1
+          + instance_type  = "m4.large"
+
+          + ebs_config {
+              + iops                 = (known after apply)
+              + size                 = (known after apply)
+              + type                 = (known after apply)
+              + volumes_per_instance = (known after apply)
+            }
+        }
+    }
+
+  # aws_iam_instance_profile.emr_profile will be created
+  + resource "aws_iam_instance_profile" "emr_profile" {
+      + arn         = (known after apply)
+      + create_date = (known after apply)
+      + id          = (known after apply)
+      + name        = "EMR_EC2_Profile"
+      + path        = "/"
+      + role        = "EMR_EC2_Role"
+      + tags_all    = (known after apply)
+      + unique_id   = (known after apply)
+    }
+
+  # aws_iam_role.emr_autoscaling_role will be created
+  + resource "aws_iam_role" "emr_autoscaling_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = [
+                              + "elasticmapreduce.amazonaws.com",
+                              + "application-autoscaling.amazonaws.com",
+                            ]
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "EMR_AutoScalingRole"
+      + path                  = "/"
+      + tags_all              = (known after apply)
+      + unique_id             = (known after apply)
+
+      + inline_policy {
+          + name   = (known after apply)
+          + policy = (known after apply)
+        }
+    }
+
+  # aws_iam_role.emr_service_role will be created
+  + resource "aws_iam_role" "emr_service_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "elasticmapreduce.amazonaws.com"
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "EMR_ServiceRole"
+      + path                  = "/"
+      + tags_all              = (known after apply)
+      + unique_id             = (known after apply)
+
+      + inline_policy {
+          + name   = (known after apply)
+          + policy = (known after apply)
+        }
+    }
+
+  # aws_iam_role.role will be created
+  + resource "aws_iam_role" "role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ec2.amazonaws.com"
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "EMR_EC2_Role"
+      + path                  = "/"
+      + tags_all              = (known after apply)
+      + unique_id             = (known after apply)
+
+      + inline_policy {
+          + name   = (known after apply)
+          + policy = (known after apply)
+        }
+    }
+
+  # aws_iam_role_policy_attachment.emr_autoscaling_role will be created
+  + resource "aws_iam_role_policy_attachment" "emr_autoscaling_role" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforAutoScalingRole"
+      + role       = "EMR_AutoScalingRole"
+    }
+
+  # aws_iam_role_policy_attachment.emr_service_role will be created
+  + resource "aws_iam_role_policy_attachment" "emr_service_role" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceRole"
+      + role       = "EMR_ServiceRole"
+    }
+
+  # aws_internet_gateway.gw will be created
+  + resource "aws_internet_gateway" "gw" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + tags     = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+      + tags_all = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # aws_route_table.emr_route will be created
+  + resource "aws_route_table" "emr_route" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = [
+          + {
+              + carrier_gateway_id         = ""
+              + cidr_block                 = "0.0.0.0/0"
+              + destination_prefix_list_id = ""
+              + egress_only_gateway_id     = ""
+              + gateway_id                 = (known after apply)
+              + instance_id                = ""
+              + ipv6_cidr_block            = ""
+              + local_gateway_id           = ""
+              + nat_gateway_id             = ""
+              + network_interface_id       = ""
+              + transit_gateway_id         = ""
+              + vpc_endpoint_id            = ""
+              + vpc_peering_connection_id  = ""
+            },
+        ]
+      + tags             = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+      + tags_all         = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table_association.emr_route_assoc will be created
+  + resource "aws_route_table_association" "emr_route_assoc" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # aws_s3_bucket.create_bucket will be created
+  + resource "aws_s3_bucket" "create_bucket" {
+      + acceleration_status         = (known after apply)
+      + acl                         = "private"
+      + arn                         = (known after apply)
+      + bucket                      = "airlypw"
+      + bucket_domain_name          = (known after apply)
+      + bucket_regional_domain_name = (known after apply)
+      + force_destroy               = false
+      + hosted_zone_id              = (known after apply)
+      + id                          = (known after apply)
+      + region                      = (known after apply)
+      + request_payer               = (known after apply)
+      + tags                        = {
+          + "env"  = "env"
+          + "role" = "rolename"
+        }
+      + tags_all                    = {
+          + "env"  = "env"
+          + "role" = "rolename"
+        }
+      + website_domain              = (known after apply)
+      + website_endpoint            = (known after apply)
+
+      + versioning {
+          + enabled    = (known after apply)
+          + mfa_delete = (known after apply)
+        }
+    }
+
+  # aws_security_group.emr_master will be created
+  + resource "aws_security_group" "emr_master" {
+      + arn                    = (known after apply)
+      + description            = "Security group for EMR master."
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "5.184.2.217/32",
+                ]
+              + description      = ""
+              + from_port        = 20888
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 20888
+            },
+          + {
+              + cidr_blocks      = [
+                  + "5.184.2.217/32",
+                ]
+              + description      = ""
+              + from_port        = 22
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 22
+            },
+          + {
+              + cidr_blocks      = [
+                  + "5.184.2.217/32",
+                ]
+              + description      = ""
+              + from_port        = 4040
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 4040
+            },
+          + {
+              + cidr_blocks      = [
+                  + "5.184.2.217/32",
+                ]
+              + description      = ""
+              + from_port        = 8888
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 8888
+            },
+          + {
+              + cidr_blocks      = [
+                  + "5.184.2.217/32",
+                ]
+              + description      = ""
+              + from_port        = 9092
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 9092
+            },
+          + {
+              + cidr_blocks      = [
+                  + "5.184.2.217/32",
+                ]
+              + description      = ""
+              + from_port        = 9443
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 9443
+            },
+        ]
+      + name                   = "Airly - EMR-master"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = true
+      + tags                   = {
+          + "Name" = "EMR_master"
+        }
+      + tags_all               = {
+          + "Name" = "EMR_master"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_security_group.emr_slave will be created
+  + resource "aws_security_group" "emr_slave" {
+      + arn                    = (known after apply)
+      + description            = "Security group for EMR slave."
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "5.184.2.217/32",
+                ]
+              + description      = ""
+              + from_port        = 22
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 22
+            },
+        ]
+      + name                   = "Airly - EMR-slave"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = true
+      + tags                   = {
+          + "Name" = "EMR_slave"
+        }
+      + tags_all               = {
+          + "Name" = "EMR_slave"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_subnet.emr_subnet will be created
+  + resource "aws_subnet" "emr_subnet" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = (known after apply)
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.1.0/24"
+      + id                              = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = false
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+      + tags_all                        = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # aws_vpc.emr_vpc will be created
+  + resource "aws_vpc" "emr_vpc" {
+      + arn                              = (known after apply)
+      + assign_generated_ipv6_cidr_block = false
+      + cidr_block                       = "10.0.0.0/16"
+      + default_network_acl_id           = (known after apply)
+      + default_route_table_id           = (known after apply)
+      + default_security_group_id        = (known after apply)
+      + dhcp_options_id                  = (known after apply)
+      + enable_classiclink               = (known after apply)
+      + enable_classiclink_dns_support   = (known after apply)
+      + enable_dns_hostnames             = true
+      + enable_dns_support               = true
+      + id                               = (known after apply)
+      + instance_tenancy                 = "default"
+      + ipv6_association_id              = (known after apply)
+      + ipv6_cidr_block                  = (known after apply)
+      + main_route_table_id              = (known after apply)
+      + owner_id                         = (known after apply)
+      + tags                             = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+      + tags_all                         = {
+          + "Env"     = "Big Data"
+          + "Name"    = "Airly"
+          + "Project" = "PW"
+        }
+    }
+
+Plan: 15 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + id                       = (known after apply)
+  + master_public_dns        = (known after apply)
+  + master_security_group_id = (known after apply)
+  + name                     = "Airly-EMR"
+  + slave_security_group_id  = (known after apply)
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if you run
+"terraform apply" now.
