@@ -25,5 +25,5 @@ variable "ingress_cidr_blocks" {
 }
 # Nazwa bucketu w którym będą składowane dane
 variable "s3_bucket_name" {
-  default = "airly-pw"
+  default = "airly"
 }
