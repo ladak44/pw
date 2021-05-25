@@ -1,8 +1,9 @@
+# Tworzenie klastra EMR
 resource "aws_emr_cluster" "cluster" {
   name          = "Airly-EMR"
   release_label = "emr-5.33.0"
-  applications  = ["Spark","Hive","ZooKeeper"]
-
+  applications  = ["Spark","Hive","ZooKeeper","JupyterEnterpriseGateway","JupyterHub"]
+  
   log_uri = "s3://${var.s3_bucket_name}/emr/logs/"
   termination_protection            = false
   keep_job_flow_alive_when_no_steps = true
@@ -79,17 +80,6 @@ EOF
 #    name = "Bootstraping scripts"
 #  }
 
-#step = [
-#    {
-#      name              = "Copy script file from s3."
-#      action_on_failure = "CONTINUE"
-
-#      hadoop_jar_step : {
-#        jar  = "command-runner.jar",
-#        args = ["aws", "s3", "cp", "s3://airly-pw/bootstrap/bootstrap.sh", "/home/hadoop/"]
-#      }
-#    }
-#]
 
   service_role = aws_iam_role.emr_service_role.arn
   autoscaling_role = aws_iam_role.emr_autoscaling_role.arn
