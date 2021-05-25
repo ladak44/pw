@@ -1,10 +1,9 @@
-# This script returns installation_id for partcular localisation.
-# Eg: 
-# Ustka: 9002,54.3791882839,16.242646847
-# Bielsko Biała: 39984,49.9645716697,19.129201811
+# Skrypt zwracajacy identyfikator instalacji dla podanej lokalizacji: latitude i longitude
+# Np: 
+# get_sensor_id.py 54.3791882839 16.242646847
+# Ustka: 9002
+# 
 
-# DO THIS
-# dodac parametryacje -->>> klucz
 import urllib.request
 import json
 import sys
@@ -12,16 +11,36 @@ import sys
 
 def main():
      
-    apikey = "JgqZOW8cEUxwyJXCJ3NscgmUPOIlAEiH"
-    url = "https://airapi.airly.eu/v2/installations/nearest?lat=49.9645716697&lng=19.129201811&maxDistanceKM=5" 
+
+    n = len(sys.argv) 
+    if n != 3 :
+        print("Brakujacy parametery wejsciowe.")
+        exit()
     
-    print("Url:"+ url)
-    req = urllib.request.Request(url)
+    v_lat = sys.argv[1]
+    v_long = sys.argv[2]
+
+
+    try:
+        with open("airly_param.json", "r") as f:
+            param_dict = json.load(f)
+        print(param_dict["broker"])
+    except Exception as ex:
+        print("Problem z odczytem pliku parametrow: airly_param.json")
+        print(str(ex))
+        exit()
+
+    v_apikey = param_dict["api_key"]
+    v_url = param_dict["url"] +"?lat="+ v_lat + "&lng=" + v_long
+
+    print("Url:"+ v_url)
+    req = urllib.request.Request(v_url)
     req.add_header('Accept', 'application/json')
-    req.add_header('apikey', apikey)
+    req.add_header('apikey', v_apikey)
+
     try:
        with urllib.request.urlopen(req) as url:
-            out_dict = json.load(url)
+            out_dict = json.load(v_url)
     except Exception as ex:
         print("Problem with access to sensor:")
         print(str(ex))
