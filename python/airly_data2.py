@@ -8,8 +8,8 @@
 import time
 import os
 from datetime import datetime
-
-v_wait_time = 1800
+# Zapytnie co 30 min
+v_wait_time = 1800 
 
 def call_airly_sensor():
     print("###################")
