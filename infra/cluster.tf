@@ -1,4 +1,5 @@
 # Tworzenie klastra EMR
+
 resource "aws_emr_cluster" "cluster" {
   name          = "Airly-EMR"
   release_label = "emr-5.33.0"
